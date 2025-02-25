@@ -11,23 +11,71 @@ import org.json.JSONTokener;
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
+    private int batteryLevel;
+    private String direction;
+    private JSONObject previousResponse = null;
+    private JSONObject previousDecision = null;
 
     @Override
     public void initialize(String s) {
         logger.info("** Initializing the Exploration Command Center");
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}",info.toString(2));
-        String direction = info.getString("heading");
-        Integer batteryLevel = info.getInt("budget");
+        this.direction = info.getString("heading");
+        this.batteryLevel = info.getInt("budget");
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
     }
 
     @Override
     public String takeDecision() {
+
         JSONObject decision = new JSONObject();
-        decision.put("action", "stop"); // we stop the exploration immediately
-        logger.info("** Decision: {}",decision.toString());
+        JSONObject parameters = new JSONObject();
+        
+        if (batteryLevel < 2) {
+            decision.put("action", "stop");
+            return decision.toString();
+        } 
+        
+        if (previousDecision == null){
+            decision.put("action", "fly");
+        } else if (direction.equals("S") && previousDecision.getString("action").equals("heading")) {
+            decision.put("action", "echo");
+            parameters.put("direction", "E");
+            decision.put("parameters", parameters);
+        } else if (!previousDecision.getString("action").equals("echo")) {
+            decision.put("action", "echo"); 
+            if (direction.equals("E")) {
+                parameters.put("direction", "E");
+            } else if (direction.equals("W")){
+                parameters.put("direction", "W");
+            }
+            decision.put("parameters", parameters);
+        } else if(direction.equals("S") && previousResponse.getJSONObject("extras").getInt("range") == 0){
+            decision.put("action", "heading");
+            parameters.put("direction", "W");
+            direction = "W";
+            decision.put("parameters", parameters);
+        } else if (direction.equals("S") && previousResponse.getJSONObject("extras").getInt("range") > 0){
+            decision.put("action", "heading");
+            parameters.put("direction", "E");
+            direction = "E";
+            decision.put("parameters", parameters); 
+        } else if (previousResponse.getJSONObject("extras").getInt("range") == 1 && (direction.equals("E") || direction.equals("W"))) {
+            decision.put("action", "heading"); 
+            parameters.put("direction", "S"); 
+            direction = "S";
+            decision.put("parameters", parameters);
+        } else if (previousResponse.getJSONObject("extras").getString("found").equals("GROUND")) {
+            decision.put("action", "stop");
+        } else if (previousResponse.getJSONObject("extras").getString("found").equals("OUT_OF_RANGE")) {
+            decision.put("action", "fly");
+        }
+
+        logger.info("** Decision: {}",decision.toString(4));
+        previousDecision = decision;
+
         return decision.toString();
     }
 
@@ -37,10 +85,13 @@ public class Explorer implements IExplorerRaid {
         logger.info("** Response received:\n"+response.toString(2));
         Integer cost = response.getInt("cost");
         logger.info("The cost of the action was {}", cost);
+        batteryLevel -= cost;
         String status = response.getString("status");
         logger.info("The status of the drone is {}", status);
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
+        previousResponse = response;
+        logger.info("Battery level is now {}", batteryLevel);
     }
 
     @Override
