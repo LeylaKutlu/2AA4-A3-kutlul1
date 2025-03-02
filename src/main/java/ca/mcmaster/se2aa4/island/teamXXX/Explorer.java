@@ -13,7 +13,7 @@ public class Explorer implements IExplorerRaid {
     private final Logger logger = LogManager.getLogger();
     private int batteryLevel;
     private String direction;
-    private JSONObject previousResponse = null;
+    private Response previousResponse = null;
     private JSONObject previousDecision = null;
 
     @Override
@@ -52,24 +52,24 @@ public class Explorer implements IExplorerRaid {
                 parameters.put("direction", "W");
             }
             decision.put("parameters", parameters);
-        } else if(direction.equals("S") && previousResponse.getJSONObject("extras").getInt("range") == 0){
+        } else if(direction.equals("S") && previousResponse.getRange() == 0){
             decision.put("action", "heading");
             parameters.put("direction", "W");
             direction = "W";
             decision.put("parameters", parameters);
-        } else if (direction.equals("S") && previousResponse.getJSONObject("extras").getInt("range") > 0){
+        } else if (direction.equals("S") && previousResponse.getRange() > 0){
             decision.put("action", "heading");
             parameters.put("direction", "E");
             direction = "E";
             decision.put("parameters", parameters); 
-        } else if (previousResponse.getJSONObject("extras").getInt("range") == 1 && (direction.equals("E") || direction.equals("W"))) {
+        } else if (previousResponse.getRange() == 1 && (direction.equals("E") || direction.equals("W"))) {
             decision.put("action", "heading"); 
             parameters.put("direction", "S"); 
             direction = "S";
             decision.put("parameters", parameters);
-        } else if (previousResponse.getJSONObject("extras").getString("found").equals("GROUND")) {
+        } else if (previousResponse.groundFound()) {
             decision.put("action", "stop");
-        } else if (previousResponse.getJSONObject("extras").getString("found").equals("OUT_OF_RANGE")) {
+        } else if (!previousResponse.groundFound()) {
             decision.put("action", "fly");
         }
 
@@ -81,14 +81,15 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public void acknowledgeResults(String s) {
-        JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
-        logger.info("** Response received:\n"+response.toString(2));
-        Integer cost = response.getInt("cost");
+        JSONObject JSONresponse = new JSONObject(new JSONTokener(new StringReader(s)));
+        Response response = new Response(JSONresponse);
+        logger.info("** Response received:\n"+response.getResponse());
+        Integer cost = response.getCost();
         logger.info("The cost of the action was {}", cost);
         batteryLevel -= cost;
-        String status = response.getString("status");
+        String status = response.getStatus();
         logger.info("The status of the drone is {}", status);
-        JSONObject extraInfo = response.getJSONObject("extras");
+        JSONObject extraInfo = response.getExtras();
         logger.info("Additional information received: {}", extraInfo);
         previousResponse = response;
         logger.info("Battery level is now {}", batteryLevel);
