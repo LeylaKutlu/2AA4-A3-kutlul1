@@ -11,7 +11,7 @@ public class Decision {
     }
 
     public String getAction() {
-        return decision.opString("action", "");
+        return decision.optString("action", "");
     }
 
     public void setAction(String action) {

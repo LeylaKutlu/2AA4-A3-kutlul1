@@ -15,6 +15,7 @@ public class Explorer implements IExplorerRaid {
     private String direction;
     private Response previousResponse = null;
     private JSONObject previousDecision = null;
+    private DecisionMaker decisionMaker;
 
     @Override
     public void initialize(String s) {
@@ -24,6 +25,7 @@ public class Explorer implements IExplorerRaid {
         this.direction = info.getString("heading");
         int batteryLevel = info.getInt("budget");
         this.drone = new Drone(batteryLevel, direction);
+        this.decisionMaker = new DecisionMaker();
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
     }
@@ -31,53 +33,17 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
 
-        Decision decision = new JSONObject();
-        JSONObject parameters = new JSONObject();
-        
-        if (drone.getBatteryLevel() < 2) {
-            decision.setAction("stop");
-            return decision.toString();
-        } 
-        
-        if (previousDecision == null){
-            decision.setAction("fly");
-        } else if (direction.equals("S") && previousDecision.getAction.equals("heading")) {
-            decision.setAction("echo");
-            parameters.put("direction", "E");
-            decision.setParameters(parameters);
-        } else if (!previousDecision.getAction.equals("echo")) {
-            decision.setAction("echo"); 
-            if (direction.equals("E")) {
-                parameters.put("direction", "E");
-            } else if (direction.equals("W")){
-                parameters.put("direction", "W");
-            }
-            decision.setParameters(parameters);
-        } else if(direction.equals("S") && previousResponse.getRange() == 0){
-            decision.setAction("heading");
-            parameters.put("direction", "W");
-            direction = "W";
-            decision.setParameters(parameters);
-        } else if (direction.equals("S") && previousResponse.getRange() > 0){
-            decision.setAction("heading");
-            parameters.put("direction", "E");
-            direction = "E";
-            decision.setParameters(parameters);
-        } else if (previousResponse.getRange() == 1 && (direction.equals("E") || direction.equals("W"))) {
-            decision.setAction("heading"); 
-            parameters.put("direction", "S"); 
-            direction = "S";
-            decision.setParameters(parameters);
-        } else if (previousResponse.groundFound()) {
-            decision.setAction("stop");
-        } else if (!previousResponse.groundFound()) {
-            decision.setAction("fly");
+        if (previousResponse != null) {
+            decisionMaker.setResponse(previousResponse);
+        }
+        if (previousDecision != null) {
+            decisionMaker.setDecision(previousDecision);
         }
 
-        logger.info("** Decision: {}",decision.toString(4));
-        previousDecision = decision;
-
-        return decision.toString();
+        String decision = decisionMaker.decideAction(drone);
+        logger.info("** Decision: {}", decision);
+        previousDecision = new JSONObject(decision);
+        return decision;
     }
 
     @Override
