@@ -11,98 +11,92 @@ import org.json.JSONTokener;
 public class DecisionMaker {
     private final Logger logger = LogManager.getLogger();
 
-    private JSONObject decision;
-    private JSONObject previousDecision;
-    private Response previousResponse;
-    private String direction;
+    private Decision decision = new Decision();
+    private Decision previousDecision = null;
+    private Response previousResponse = null;
+    private String direction = "E";
+    private JSONObject parameters = new JSONObject();
 
-    public DecisionMaker() {
-        this.decision = new JSONObject();
-        this.previousDecision = null;
-        this.previousResponse = null;
-    }
+    // public DecisionMaker() {
+    //     this.decision = new Decision();
+    //     this.previousDecision = null;
+    //     this.previousResponse = null;
+    // }
 
     public void setResponse(Response previousResponse) {
         this.previousResponse = previousResponse;
     }
 
-    public void setDecision(JSONObject previousDecision) {
+    public void setDecision(Decision previousDecision) {
         this.previousDecision = previousDecision;
     }
 
-    public JSONObject getDecision() {
+    public Decision getDecision() {
         return decision;
     }
 
     public String decideAction(Drone drone) {
-        if (direction == null){
-            direction = "E"; //what is the default can be changed accordingly
-        }
-
-        JSONObject parameters = new JSONObject();
-        parameters.put("direction", direction);
-        JSONObject decision = new JSONObject();
         
         if (drone.getBatteryLevel() < 2) {
-            decision.put("action", "stop");
+            decision.setAction("stop");
             return decision.toString();
         } 
         
         if (previousDecision == null){
-            decision.put("action", "fly");
+            decision.setAction("fly");
             return decision.toString();
         } 
         
-        if (direction.equals("S") && previousDecision.getString("action").equals("heading")) {
-            decision.put("action", "echo");
+        if (direction.equals("S") && previousDecision.getAction().equals("heading")) {
+            decision.setAction("echo");
             parameters.put("direction", "E");
-            decision.put("parameters", parameters);
+            decision.setParameters(parameters);
             return decision.toString();
         } 
         
-        if (!previousDecision.getString("action").equals("echo")) {
-            decision.put("action", "echo"); 
+        if (!previousDecision.getAction().equals("echo")) {
+            decision.setAction("echo"); 
             if (direction.equals("E")) {
                 parameters.put("direction", "E");
             } else if (direction.equals("W")){
                 parameters.put("direction", "W");
             }
-            decision.put("parameters", parameters);
+            decision.setParameters(parameters);
             return decision.toString();
         } 
         
         if(direction.equals("S") && previousResponse.getRange() == 0){
-            decision.put("action", "heading");
+            decision.setAction("heading");
             parameters.put("direction", "W");
             direction = "W";
-            decision.put("parameters", parameters);
+            decision.setParameters(parameters);
             return decision.toString();
         } 
         
         if (direction.equals("S") && previousResponse.getRange() > 0){
-            decision.put("action", "heading");
+            decision.setAction("heading");
             parameters.put("direction", "E");
             direction = "E";
-            decision.put("parameters", parameters);
+            decision.setParameters(parameters);
             return decision.toString();
         } 
         
         if (previousResponse.getRange() == 1 && (direction.equals("E") || direction.equals("W"))) {
-            decision.put("action", "heading");
+            decision.setAction("heading");
             parameters.put("direction", "S"); 
             direction = "S";
-            decision.put("parameters", parameters);
+            decision.setParameters(parameters);
             return decision.toString();
         } 
         
         if (previousResponse.groundFound()) {
-            decision.put("action", "stop");
+            decision.setAction("stop");
             logger.info("ground"); //remove
             return decision.toString();
         } 
         
         if (!previousResponse.groundFound()) {
-            decision.put("action", "fly");
+            decision.setAction("fly");
             return decision.toString();
         }
 

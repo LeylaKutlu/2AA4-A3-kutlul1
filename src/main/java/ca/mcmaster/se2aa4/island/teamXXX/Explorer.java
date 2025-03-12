@@ -14,7 +14,7 @@ public class Explorer implements IExplorerRaid {
     private Drone drone;
     private String direction;
     private Response previousResponse = null;
-    private JSONObject previousDecision = null;
+    private Decision previousDecision = null;
     private DecisionMaker decisionMaker;
 
     @Override
@@ -42,8 +42,9 @@ public class Explorer implements IExplorerRaid {
 
         String decision = decisionMaker.decideAction(drone);
         logger.info("** Decision: {}", decision);
-        previousDecision = new JSONObject(decision);
-        return decision;
+        previousDecision = decisionMaker.getDecision();
+        return decision.toString();
+        
     }
 
     @Override
