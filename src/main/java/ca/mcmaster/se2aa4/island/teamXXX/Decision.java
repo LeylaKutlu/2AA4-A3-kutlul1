@@ -16,7 +16,9 @@ public class Decision {
 
     public void setAction(String action) {
         decision.put("action", action);
+        decision.remove("parameters");
     }
+
 
     public void setParameters(JSONObject parameters) {
         decision.put("parameters", parameters);
