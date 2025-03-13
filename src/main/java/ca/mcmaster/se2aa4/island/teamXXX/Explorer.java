@@ -12,7 +12,6 @@ public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
     private Drone drone;
-    private String direction;
     private Response previousResponse = null;
     private Decision previousDecision = null;
     private DecisionMaker decisionMaker;
@@ -22,7 +21,7 @@ public class Explorer implements IExplorerRaid {
         logger.info("** Initializing the Exploration Command Center");
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}",info.toString(2));
-        this.direction = info.getString("heading");
+        String direction = info.getString("heading");
         int batteryLevel = info.getInt("budget");
         this.drone = new Drone(batteryLevel, direction);
         this.decisionMaker = new DecisionMaker();
@@ -49,9 +48,9 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public void acknowledgeResults(String s) {
-        JSONObject JSONresponse = new JSONObject(new JSONTokener(new StringReader(s)));
-        Response response = new Response(JSONresponse);
-        logger.info("** Response received:\n"+response.getResponse());
+        JSONObject responseJSON = new JSONObject(new JSONTokener(new StringReader(s)));
+        Response response = new Response(responseJSON);
+        logger.info("** Response received:\n"+response.toString());
         Integer cost = response.getCost();
         logger.info("The cost of the action was {}", cost);
         drone.decreaseBattery(cost);

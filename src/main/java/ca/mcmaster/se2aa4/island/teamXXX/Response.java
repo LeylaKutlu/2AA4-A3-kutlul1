@@ -1,14 +1,12 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-import java.io.StringReader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 public class Response{
-    public JSONObject response;
+    private JSONObject response;
     private JSONObject extras;
 
     public Response(JSONObject response){
@@ -36,18 +34,15 @@ public class Response{
         } else {
             return extras.getInt("range");
         }
-
     }
 
     public boolean groundFound(){
-        if (extras == null){
-            return false;
-        } else {
-            return extras.getString("found").equals("GROUND");
-        }
+
+        return (extras != null) && "GROUND".equals(extras.getString("found"));
     }
 
-    public String getResponse(){
+    @Override
+    public String toString(){
         return this.response.toString(2);
     }
 
