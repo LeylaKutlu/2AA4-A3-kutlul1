@@ -14,13 +14,12 @@ public class Decision {
     }
 
     public Action getAction() {
-        Action action = Action.valueOf(decision.optString("action", "").toUpperCase());
-        return action;
+        return Action.valueOf(decision.optString("action", "").toUpperCase());
     }
 
     public void setAction(Action action) {
         decision.put("action", action.toString());
-        //decision.remove("parameters");
+        decision.remove("parameters");
     }
 
 
