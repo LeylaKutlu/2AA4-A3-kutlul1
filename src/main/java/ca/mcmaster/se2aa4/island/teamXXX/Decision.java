@@ -1,5 +1,7 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
+import ca.mcmaster.se2aa4.island.teamXXX.Action;
+
 import org.json.JSONObject;
 
 public class Decision {
@@ -14,8 +16,8 @@ public class Decision {
         return decision.optString("action", "");
     }
 
-    public void setAction(String action) {
-        decision.put("action", action);
+    public void setAction(Action action) {
+        decision.put("action", action.toString());
         decision.remove("parameters");
     }
 

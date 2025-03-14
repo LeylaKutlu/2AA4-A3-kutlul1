@@ -1,5 +1,7 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
+import ca.mcmaster.se2aa4.island.teamXXX.Action;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,24 +31,24 @@ public class DecisionMaker {
     public String decideAction(Drone drone) {
         
         if (drone.getBatteryLevel() < 2) {
-            decision.setAction("stop");
+            decision.setAction(Action.STOP);
             return decision.toString();
         } 
         
         if (previousDecision == null){
-            decision.setAction("fly");
+            decision.setAction(Action.FLY);
             return decision.toString();
         } 
         
         if ("S".equals(direction) && "heading".equals(previousDecision.getAction())) {
-            decision.setAction("echo");
+            decision.setAction(Action.ECHO);
             parameters.put("direction", "E");
             decision.setParameters(parameters);
             return decision.toString();
         } 
         
         if (!"echo".equals(previousDecision.getAction())) {
-            decision.setAction("echo"); 
+            decision.setAction(Action.ECHO); 
             if ("E".equals(direction)) {
                 parameters.put("direction", "E");
             } else if ("W".equals(direction)){
@@ -57,7 +59,7 @@ public class DecisionMaker {
         } 
         
         if("S".equals(direction) && previousResponse.getRange() == 0){
-            decision.setAction("heading");
+            decision.setAction(Action.HEADING);
             parameters.put("direction", "W");
             direction = "W";
             decision.setParameters(parameters);
@@ -65,7 +67,7 @@ public class DecisionMaker {
         } 
         
         if ("S".equals(direction) && previousResponse.getRange() > 0){
-            decision.setAction("heading");
+            decision.setAction(Action.HEADING);
             parameters.put("direction", "E");
             direction = "E";
             decision.setParameters(parameters);
@@ -73,7 +75,7 @@ public class DecisionMaker {
         } 
         
         if (previousResponse.getRange() == 1 && ("E".equals(direction) || "W".equals(direction))) {
-            decision.setAction("heading");
+            decision.setAction(Action.HEADING);
             parameters.put("direction", "S"); 
             direction = "S";
             decision.setParameters(parameters);
@@ -81,13 +83,13 @@ public class DecisionMaker {
         } 
         
         if (previousResponse.groundFound()) {
-            decision.setAction("stop");
+            decision.setAction(Action.STOP);
             logger.info("ground"); //remove
             return decision.toString();
         } 
         
         if (!previousResponse.groundFound()) {
-            decision.setAction("fly");
+            decision.setAction(Action.FLY);
             return decision.toString();
         }
 
