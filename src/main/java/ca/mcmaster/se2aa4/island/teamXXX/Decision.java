@@ -1,6 +1,7 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
 import ca.mcmaster.se2aa4.island.teamXXX.Action;
+import ca.mcmaster.se2aa4.island.teamXXX.Direction;
 
 import org.json.JSONObject;
 
@@ -19,7 +20,7 @@ public class Decision {
 
     public void setAction(Action action) {
         decision.put("action", action.toString());
-        decision.remove("parameters");
+        //decision.remove("parameters");
     }
 
 

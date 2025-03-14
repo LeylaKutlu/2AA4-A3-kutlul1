@@ -1,6 +1,7 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
 import ca.mcmaster.se2aa4.island.teamXXX.Action;
+import ca.mcmaster.se2aa4.island.teamXXX.Direction;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +14,7 @@ public class DecisionMaker {
     private Decision decision = new Decision();
     private Decision previousDecision = null;
     private Response previousResponse = null;
-    private String direction = "E";
+    private Direction direction = Direction.EAST;
     private JSONObject parameters = new JSONObject();
 
     public void setResponse(Response previousResponse) {
@@ -40,44 +41,44 @@ public class DecisionMaker {
             return decision.toString();
         } 
         
-        if ("S".equals(direction) && Action.HEADING.equals(previousDecision.getAction())) {
+        if (Direction.SOUTH.equals(direction) && Action.HEADING.equals(previousDecision.getAction())) {
             decision.setAction(Action.ECHO);
-            parameters.put("direction", "E");
+            parameters.put("direction", Direction.EAST.toString());
             decision.setParameters(parameters);
             return decision.toString();
         } 
         
         if (!Action.ECHO.equals(previousDecision.getAction())) {
             decision.setAction(Action.ECHO); 
-            if ("E".equals(direction)) {
-                parameters.put("direction", "E");
-            } else if ("W".equals(direction)){
-                parameters.put("direction", "W");
+            if (Direction.EAST.equals(direction)) {
+                parameters.put("direction", Direction.EAST.toString());
+            } else if (Direction.WEST.equals(direction)){
+                parameters.put("direction", Direction.WEST.toString());
             }
             decision.setParameters(parameters);
             return decision.toString();
         } 
         
-        if("S".equals(direction) && previousResponse.getRange() == 0){
+        if(Direction.SOUTH.equals(direction) && previousResponse.getRange() == 0){
             decision.setAction(Action.HEADING);
-            parameters.put("direction", "W");
-            direction = "W";
+            parameters.put("direction", Direction.WEST.toString());
+            direction = Direction.WEST;
             decision.setParameters(parameters);
             return decision.toString();
         } 
         
-        if ("S".equals(direction) && previousResponse.getRange() > 0){
+        if (Direction.SOUTH.equals(direction) && previousResponse.getRange() > 0){
             decision.setAction(Action.HEADING);
-            parameters.put("direction", "E");
-            direction = "E";
+            parameters.put("direction", Direction.EAST.toString());
+            direction = Direction.EAST;
             decision.setParameters(parameters);
             return decision.toString();
         } 
         
-        if (previousResponse.getRange() == 1 && ("E".equals(direction) || "W".equals(direction))) {
+        if (previousResponse.getRange() == 1 && (Direction.EAST.equals(direction) || Direction.WEST.equals(direction))) {
             decision.setAction(Action.HEADING);
-            parameters.put("direction", "S"); 
-            direction = "S";
+            parameters.put("direction", Direction.SOUTH.toString()); 
+            direction = Direction.SOUTH;
             decision.setParameters(parameters);
             return decision.toString();
         } 
