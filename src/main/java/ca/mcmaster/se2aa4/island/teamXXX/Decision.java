@@ -12,8 +12,9 @@ public class Decision {
         this.decision = new JSONObject();
     }
 
-    public String getAction() {
-        return decision.optString("action", "");
+    public Action getAction() {
+        Action action = Action.valueOf(decision.optString("action", "").toUpperCase());
+        return action;
     }
 
     public void setAction(Action action) {

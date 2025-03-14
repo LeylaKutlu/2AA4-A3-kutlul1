@@ -40,14 +40,14 @@ public class DecisionMaker {
             return decision.toString();
         } 
         
-        if ("S".equals(direction) && "heading".equals(previousDecision.getAction())) {
+        if ("S".equals(direction) && Action.HEADING.equals(previousDecision.getAction())) {
             decision.setAction(Action.ECHO);
             parameters.put("direction", "E");
             decision.setParameters(parameters);
             return decision.toString();
         } 
         
-        if (!"echo".equals(previousDecision.getAction())) {
+        if (!Action.ECHO.equals(previousDecision.getAction())) {
             decision.setAction(Action.ECHO); 
             if ("E".equals(direction)) {
                 parameters.put("direction", "E");
@@ -84,7 +84,6 @@ public class DecisionMaker {
         
         if (previousResponse.groundFound()) {
             decision.setAction(Action.STOP);
-            logger.info("ground"); //remove
             return decision.toString();
         } 
         
