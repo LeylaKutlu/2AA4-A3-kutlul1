@@ -31,7 +31,7 @@ public class Response{
     }
 
     public int getRange(){
-        if (extras == null){
+        if (extras == null || !extras.has("range")){
             return -1;
         } else {
             return extras.getInt("range");
@@ -39,32 +39,35 @@ public class Response{
     }
 
     public boolean groundFound(){
-
-        return (extras != null) && "GROUND".equals(extras.getString("found"));
+        if (extras == null || !extras.has("found")){
+            return false;
+        }
+        return "GROUND".equals(extras.getString("found"));
     }
 
     public String getCreek(){
-        if (extras == null){
+        if (extras == null || !extras.has("creeks")){
             return null;
         } 
 
-        ArrayList<Object> creeks = new ArrayList<>(extras.getJSONArray("creeks").toList());
-        if (creeks.size() == 0){
+        JSONArray creeks = extras.getJSONArray("creeks");
+        if (creeks.isEmpty()){
             return null;
         } 
-        return creeks.get(0).toString();
+        return creeks.getString(0);
     }
 
     public boolean foundSite(){
-        if (extras == null){
+        if (extras == null || !extras.has("sites")){
             return false;
-        }
+        } 
 
-        ArrayList<Object> sites = new ArrayList<>(extras.getJSONArray("sites").toList());
-        if (sites.size() == 0){
+        JSONArray sites = extras.getJSONArray("sites");
+        if (sites.isEmpty()){
             return false;
-        }
+        } 
         return true;
+    
     }
 
     @Override

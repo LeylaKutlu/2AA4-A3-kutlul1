@@ -14,7 +14,7 @@ public class Explorer implements IExplorerRaid {
     private Drone drone;
     private Response previousResponse = null;
     private Decision previousDecision = null;
-    private DecisionMaker decisionMaker;
+    private PhaseDecisionMaker decisionMaker;
 
     @Override
     public void initialize(String s) {
@@ -24,7 +24,7 @@ public class Explorer implements IExplorerRaid {
         String direction = info.getString("heading");
         int batteryLevel = info.getInt("budget");
         this.drone = new Drone(batteryLevel, direction);
-        this.decisionMaker = new DecisionMaker();
+        this.decisionMaker = new PhaseDecisionMaker();
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
     }

@@ -9,13 +9,13 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 public class DecisionMaker {
-    private final Logger logger = LogManager.getLogger();
+    protected final Logger logger = LogManager.getLogger();
 
-    private Decision decision = new Decision();
-    private Decision previousDecision = null;
-    private Response previousResponse = null;
-    private Direction direction = Direction.EAST;
-    private JSONObject parameters = new JSONObject();
+    protected Decision decision = new Decision();
+    protected Decision previousDecision = null;
+    protected Response previousResponse = null;
+    protected Direction direction = Direction.EAST;
+    protected JSONObject parameters = new JSONObject();
 
     public void setResponse(Response previousResponse) {
         this.previousResponse = previousResponse;
@@ -63,6 +63,7 @@ public class DecisionMaker {
             decision.setAction(Action.HEADING);
             parameters.put("direction", Direction.WEST.toString());
             direction = Direction.WEST;
+            drone.setDirection("W");
             decision.setParameters(parameters);
             return decision.toString();
         } 
@@ -71,6 +72,7 @@ public class DecisionMaker {
             decision.setAction(Action.HEADING);
             parameters.put("direction", Direction.EAST.toString());
             direction = Direction.EAST;
+            drone.setDirection("E");
             decision.setParameters(parameters);
             return decision.toString();
         } 
@@ -79,6 +81,7 @@ public class DecisionMaker {
             decision.setAction(Action.HEADING);
             parameters.put("direction", Direction.SOUTH.toString()); 
             direction = Direction.SOUTH;
+            drone.setDirection("S");
             decision.setParameters(parameters);
             return decision.toString();
         } 

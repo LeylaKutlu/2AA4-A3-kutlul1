@@ -1,7 +1,7 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
 import java.util.ArrayList;
-import java.until.List;
+import java.util.List;
 
 public class Creek {
     private String creekId;

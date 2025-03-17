@@ -1,7 +1,7 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
 import java.util.ArrayList;
-import java.until.List;
+import java.util.List;
 
 public class Creeks {
 
@@ -12,7 +12,7 @@ public class Creeks {
     }
 
     public void addCreek(Creek creek) {
-            creeks.add(creek);
+        creeks.add(creek);
     }
 
     public List<Creek> getCreeks() {
