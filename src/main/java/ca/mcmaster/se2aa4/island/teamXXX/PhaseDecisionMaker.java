@@ -2,7 +2,7 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 
 import java.util.*;
 
-public class NewDecisionMaker extends DecisionMaker {
+public class PhaseDecisionMaker extends DecisionMaker {
 
     private int steps = 0;
     private int x = 1;
