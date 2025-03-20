@@ -67,7 +67,6 @@ public class Response{
             return false;
         } 
         return true;
-    
     }
 
     @Override

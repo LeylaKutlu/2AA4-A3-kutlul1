@@ -9,11 +9,7 @@ public class DecisionHandler {
 
     public static void echo(Decision decision, Direction direction) {
         JSONObject parameters = new JSONObject();
-        if (Direction.EAST.equals(direction)) {
-            parameters.put("direction", Direction.EAST.toString());
-        } else if (Direction.WEST.equals(direction)){
-            parameters.put("direction", Direction.WEST.toString());
-        }
+        parameters.put("direction", direction.toString());
         decision.setAction(Action.ECHO);
         decision.setParameters(parameters);
     }
@@ -27,5 +23,9 @@ public class DecisionHandler {
 
     public static void stop(Decision decision) {
         decision.setAction(Action.STOP);
+    }
+
+    public static void scan(Decision decision) {
+        decision.setAction(Action.SCAN);
     }
 }

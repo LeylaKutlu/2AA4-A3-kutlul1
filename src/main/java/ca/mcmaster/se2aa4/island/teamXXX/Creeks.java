@@ -12,10 +12,29 @@ public class Creeks {
     }
 
     public void addCreek(Creek creek) {
+        if (creek == null) {
+            return;
+        }
         creeks.add(creek);
     }
 
-    public List<Creek> getCreeks() {
-        return new ArrayList<>(creeks);
+    // public List<Creek> getCreeks() {
+    //     return new ArrayList<>(creeks);
+    // }
+
+    public Creek getNearestCreek(int x, int y) {
+        if (creeks.isEmpty()) {
+            return null;
+        }
+        Creek nearestCreek = creeks.get(0);
+        double nearestDistance = Math.sqrt(Math.pow(nearestCreek.getX() - x, 2) + Math.pow(nearestCreek.getY() - y, 2));
+        for (Creek creek : creeks) {
+            double distance = Math.sqrt(Math.pow(creek.getX() - x, 2) + Math.pow(creek.getY() - y, 2));
+            if (distance < nearestDistance) {
+                nearestCreek = creek;
+                nearestDistance = distance;
+            }
+        }
+        return nearestCreek;
     }
 }

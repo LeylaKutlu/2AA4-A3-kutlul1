@@ -31,6 +31,10 @@ public class Decision {
         return decision;
     }
 
+    public void setDecision(String decision){
+        this.decision = new JSONObject(decision);
+    }
+
     @Override
     public String toString() {
         return decision.toString();

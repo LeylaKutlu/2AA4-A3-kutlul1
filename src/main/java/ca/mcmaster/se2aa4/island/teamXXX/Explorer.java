@@ -1,5 +1,7 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
+import ca.mcmaster.se2aa4.island.teamXXX.Direction;
+
 import java.io.StringReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +16,8 @@ public class Explorer implements IExplorerRaid {
     private Drone drone;
     private Response previousResponse = null;
     private Decision previousDecision = null;
-    private PhaseDecisionMaker decisionMaker;
+    private DecisionMaker decisionMaker;
+    private EmergencySite emergencySite;
 
     @Override
     public void initialize(String s) {
@@ -23,8 +26,8 @@ public class Explorer implements IExplorerRaid {
         logger.info("** Initialization info:\n {}",info.toString(2));
         String direction = info.getString("heading");
         int batteryLevel = info.getInt("budget");
-        this.drone = new Drone(batteryLevel, direction);
-        this.decisionMaker = new PhaseDecisionMaker();
+        this.drone = new Drone(batteryLevel, Direction.EAST);
+        this.decisionMaker = new NewDecisionMaker();
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
     }
@@ -32,12 +35,15 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
 
+        if (previousResponse != null && previousResponse.foundSite()) {
+            emergencySite = new EmergencySite(drone.x(), drone.y());
+        }
+
         if (previousResponse != null) {
             decisionMaker.setResponse(previousResponse);
-        }
-        if (previousDecision != null) {
             decisionMaker.setDecision(previousDecision);
         }
+
 
         String decision = decisionMaker.decideAction(drone);
         logger.info("** Decision: {}", decision);
