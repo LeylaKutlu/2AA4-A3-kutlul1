@@ -2,7 +2,7 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 
 import java.util.*;
 
-public class NewDecisionMaker extends DecisionMaker {
+public class PhaseDecisionMaker extends DecisionMaker {
 
     private int steps = 0;
     private int x = 1;
@@ -91,6 +91,10 @@ public class NewDecisionMaker extends DecisionMaker {
 
         DecisionHandler.echo(decision, drone.getDirection());
         return decision.toString();
+    }
+
+     rivate String phaseTwoDecision(Drone drone){
+        
     }
 
 

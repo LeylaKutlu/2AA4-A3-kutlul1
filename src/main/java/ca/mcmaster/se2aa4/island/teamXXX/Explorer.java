@@ -27,7 +27,7 @@ public class Explorer implements IExplorerRaid {
         String direction = info.getString("heading");
         int batteryLevel = info.getInt("budget");
         this.drone = new Drone(batteryLevel, Direction.EAST);
-        this.decisionMaker = new NewDecisionMaker();
+        this.decisionMaker = new PhaseDecisionMaker();
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
     }
