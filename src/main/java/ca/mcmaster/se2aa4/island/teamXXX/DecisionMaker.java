@@ -21,13 +21,24 @@ public abstract class DecisionMaker {
         this.previousResponse = previousResponse;
     }
 
-    public void setDecision(Decision previousDecision) {
+    public void setPrevDecision(Decision previousDecision) {
         this.previousDecision = previousDecision;
+    }
+
+    public void setPrevResponse(Response previousResponse) {
+        this.previousResponse = previousResponse;
     }
 
     public Decision getDecision() {
         return decision;
     }
 
-    public abstract String decideAction(Drone drone);
+    public Decision getPrevDecision() {
+        return previousDecision;
+    }
+    public Response getPrevsResponse() {
+        return previousResponse;
+    }
+
+    public abstract Decision decideAction(Drone drone);
 }

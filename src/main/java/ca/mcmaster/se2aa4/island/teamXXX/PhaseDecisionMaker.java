@@ -12,11 +12,13 @@ public class PhaseDecisionMaker extends DecisionMaker {
     private boolean transition = false; 
     private Creeks creeks = new Creeks();
 
+    // consider making coordinates change in the methods of decision handler instead of here
     @Override
-    public String decideAction(Drone drone) {
+    public Decision decideAction(Drone drone) {
+        drone.setCoordinates(x, y);
         if (drone.getBatteryLevel() < 20) {
             DecisionHandler.stop(decision);
-            return decision.toString();
+            return decision;
         }
 
         if (phase == 1){
@@ -25,13 +27,13 @@ public class PhaseDecisionMaker extends DecisionMaker {
             return phaseTwoDecisions(drone);
         }
         DecisionHandler.stop(decision);
-        return decision.toString();
+        return decision;
     }
 
-    private String phaseOneDecision(Drone drone) {
+    private Decision phaseOneDecision(Drone drone) {
         if (previousDecision == null){
             DecisionHandler.echo(decision, drone.getDirection());
-            return decision.toString();
+            return decision;
         }
 
         if (Action.ECHO.equals(previousDecision.getAction()) && !previousResponse.groundFound() && previousResponse.getRange() == 0){
@@ -41,13 +43,15 @@ public class PhaseDecisionMaker extends DecisionMaker {
             DecisionHandler.heading(decision, drone.getDirection());
             decisions.add(decision.toString());
             DecisionHandler.heading(decision, Direction.NORTH);
+            y--;
+            drone.setDirection(Direction.NORTH);
             phase = 2;
-            return decision.toString();
+            return decision;
         }
 
         if (!decisions.isEmpty()){
             decision.setDecision(decisions.poll());
-            return decision.toString();
+            return decision;
         }
 
         if (Action.SCAN.equals(previousDecision.getAction())){
@@ -55,13 +59,14 @@ public class PhaseDecisionMaker extends DecisionMaker {
             DecisionHandler.echo(decision, drone.getDirection());
             decisions.add(decision.toString());
             DecisionHandler.fly(decision);
-            return decision.toString();
+            x = Direction.EAST.equals(drone.getDirection()) ? x+1 : x-1;
+            return decision;
         } 
 
         if (Action.ECHO.equals(previousDecision.getAction())){
             if (previousResponse.groundFound() && previousResponse.getRange() == 0){
                 DecisionHandler.scan(decision);
-                return decision.toString();
+                return decision;
             }
 
             int flyCount = previousResponse.groundFound() ? previousResponse.getRange() : previousResponse.getRange() - 1;
@@ -85,32 +90,34 @@ public class PhaseDecisionMaker extends DecisionMaker {
                 DecisionHandler.echo(decision, head);
                 decisions.add(decision.toString());
                 drone.setDirection(head);
+                y = y + 2; 
             }
 
             x = Direction.EAST.equals(drone.getDirection()) ? x + flyCount : x - flyCount;
 
             DecisionHandler.fly(decision);
-            return decision.toString();
+            return decision;
         }
 
         DecisionHandler.echo(decision, drone.getDirection());
-        return decision.toString();
+        return decision;
     }
 
-    private String phaseTwoDecisions(Drone drone){
+    private Decision phaseTwoDecisions(Drone drone){
         if (Action.ECHO.equals(previousDecision.getAction()) && !previousResponse.groundFound() && previousResponse.getRange() == 1){
             decisions.clear();
             DecisionHandler.fly(decision);
             decisions.add(decision.toString());
             DecisionHandler.heading(decision, Direction.SOUTH);
             drone.setDirection(Direction.SOUTH);
+            drone.setCoordinates(x,y+1);
             phase = 3;
-            return decision.toString();
+            return decision;
         }
 
         if (!decisions.isEmpty()){
             decision.setDecision(decisions.poll());
-            return decision.toString();
+            return decision;
         }
 
         if (Action.SCAN.equals(previousDecision.getAction())){
@@ -118,13 +125,13 @@ public class PhaseDecisionMaker extends DecisionMaker {
             DecisionHandler.echo(decision, drone.getDirection());
             decisions.add(decision.toString());
             DecisionHandler.fly(decision);
-            return decision.toString();
+            return decision;
         } 
 
         if (Action.ECHO.equals(previousDecision.getAction())){
             if (previousResponse.groundFound() && previousResponse.getRange() == 0){
                 DecisionHandler.scan(decision);
-                return decision.toString();
+                return decision;
             }
 
             int flyCount = previousResponse.groundFound() ? previousResponse.getRange() : previousResponse.getRange() - 1;
@@ -150,14 +157,12 @@ public class PhaseDecisionMaker extends DecisionMaker {
                 drone.setDirection(head);
             }
 
-            x = Direction.EAST.equals(drone.getDirection()) ? x + flyCount : x - flyCount;
-
             DecisionHandler.fly(decision);
-            return decision.toString();
+            return decision;
         }
 
         DecisionHandler.echo(decision, drone.getDirection());
-        return decision.toString();
+        return decision;
     }
 
 }

@@ -14,8 +14,6 @@ public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
     private Drone drone;
-    private Response previousResponse = null;
-    private Decision previousDecision = null;
     private DecisionMaker decisionMaker;
     private EmergencySite emergencySite;
 
@@ -35,21 +33,10 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
 
-        if (previousResponse != null && previousResponse.foundSite()) {
-            emergencySite = new EmergencySite(drone.x(), drone.y());
-        }
-
-        if (previousResponse != null) {
-            decisionMaker.setResponse(previousResponse);
-            decisionMaker.setDecision(previousDecision);
-        }
-
-
-        String decision = decisionMaker.decideAction(drone);
+        Decision decision = decisionMaker.decideAction(drone);
+        decisionMaker.setPrevDecision(decision);
         logger.info("** Decision: {}", decision);
-        previousDecision = decisionMaker.getDecision();
         return decision.toString();
-        
     }
 
     @Override
@@ -64,8 +51,8 @@ public class Explorer implements IExplorerRaid {
         logger.info("The status of the drone is {}", status);
         JSONObject extraInfo = response.getExtras();
         logger.info("Additional information received: {}", extraInfo);
-        previousResponse = response;
-        logger.info("Battery level is now {}", drone.getBatteryLevel());
+        decisionMaker.setPrevResponse(response);
+        logger.info("Battery level is now {}", drone.getBatteryLevel()); //not needed
     }
 
     @Override

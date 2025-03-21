@@ -3,7 +3,7 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 public class Drone {
     
     private int batteryLevel;
-    private Direction direction;
+    private Direction direction = Direction.EAST;
     private int x = 1;
     private int y = 1; 
 
@@ -32,20 +32,10 @@ public class Drone {
         this.batteryLevel -= cost;
     }
 
-    public void moveX(int x) {
-        this.x += x;
+    public void setCoordinates(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public void moveY(int y) {
-        this.y += y;
-    }
-
-    public int x() {
-        return x;
-    }
-
-    public int y() {
-        return y;
-    }
 
 }
