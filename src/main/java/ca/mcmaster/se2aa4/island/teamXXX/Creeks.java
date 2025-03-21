@@ -18,9 +18,6 @@ public class Creeks {
         creeks.add(creek);
     }
 
-    // public List<Creek> getCreeks() {
-    //     return new ArrayList<>(creeks);
-    // }
 
     public Creek getNearestCreek(int x, int y) {
         if (creeks.isEmpty()) {
