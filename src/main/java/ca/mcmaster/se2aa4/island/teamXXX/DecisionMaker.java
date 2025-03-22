@@ -36,7 +36,7 @@ public abstract class DecisionMaker {
     public Decision getPrevDecision() {
         return previousDecision;
     }
-    public Response getPrevsResponse() {
+    public Response getPrevResponse() {
         return previousResponse;
     }
 
