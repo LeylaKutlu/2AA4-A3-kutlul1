@@ -3,6 +3,11 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 public class PhaseOneDecisionStrategy implements DecisionStrategy {
     @Override
     public Decision decideAction(Drone drone, PhaseDecisionMaker decisionMaker, Creeks creeks) {
+        if (drone.getBatteryLevel() < 20) {
+            DecisionHandler.stop(decisionMaker.getDecision());
+            return decisionMaker.getDecision();
+        }
+
         if (decisionMaker.getPrevDecision() == null){
             DecisionHandler.echo(decisionMaker.getDecision(), drone.getDirection());
             return decisionMaker.getDecision();
