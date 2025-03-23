@@ -2,7 +2,7 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 
 import org.json.JSONObject;
 
-public class DecisionHandler {
+public class ActionHandler {
     public static void fly(Decision decision) {
         decision.setAction(Action.FLY);
     }

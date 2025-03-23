@@ -16,10 +16,6 @@ public class Drone {
         return batteryLevel;
     }
 
-    public void setBatteryLevel(int batteryLevel) { // used?
-        this.batteryLevel = batteryLevel;
-    }
-
     public Direction getDirection() {
         return direction;
     }

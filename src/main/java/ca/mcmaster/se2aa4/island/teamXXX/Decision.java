@@ -13,6 +13,10 @@ public class Decision {
         this.decision = new JSONObject();
     }
 
+    public Decision(Decision decision) {
+        this.decision = decision.decisionJSON();
+    }
+
     public Action getAction() {
         return Action.valueOf(decision.optString("action", "").toUpperCase());
     }
@@ -22,12 +26,11 @@ public class Decision {
         decision.remove("parameters");
     }
 
-
     public void setParameters(JSONObject parameters) {
         decision.put("parameters", parameters);
     }
 
-    public JSONObject getDecision() {
+    private JSONObject decisionJSON() {
         return decision;
     }
 

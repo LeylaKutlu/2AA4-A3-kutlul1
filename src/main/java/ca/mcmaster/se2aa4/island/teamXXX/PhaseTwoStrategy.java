@@ -2,69 +2,64 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 
 public class PhaseTwoStrategy implements DecisionStrategy {
     @Override
-    public Decision decideAction(Drone drone, PhaseDecisionMaker decisionMaker, Creeks creeks) {
+    public Decision decideAction(Drone drone, PhaseDecisionMaker decisionMaker, Creeks creeks, PreviousState previous, CurrentState currentState) {
         if (drone.getBatteryLevel() < 20) {
-            DecisionHandler.stop(decisionMaker.getDecision());
-            return decisionMaker.getDecision();
+            currentState.stop();
+            return currentState.getDecision();
         }
 
-        if (Action.ECHO.equals(decisionMaker.getPrevDecision().getAction()) && !decisionMaker.getPrevResponse().groundFound() && decisionMaker.getPrevResponse().getRange() == 1){
-            decisionMaker.getDecisions().clear();
-            DecisionHandler.stop(decisionMaker.getDecision());
-            // decisionMaker.getDecisions().add(decisionMaker.getDecision().toString());
-            // DecisionHandler.heading(decisionMaker.getDecision(), Direction.SOUTH);
-            // drone.setDirection(Direction.SOUTH);
-            // drone.setCoordinates(x,y+1);
-            return decisionMaker.getDecision();
+        if (Action.ECHO.equals(previous.getAction()) && !previous.isGround() && previous.getRange() == 1){
+            currentState.clearDecisions();
+            currentState.stop();
+            return currentState.getDecision();
         }
 
-        if (!decisionMaker.getDecisions().isEmpty()){
-            decisionMaker.getDecision().setDecision(decisionMaker.getDecisions().poll());
-            return decisionMaker.getDecision();
+        if (currentState.hasPendingDecisions()){
+            return currentState.dequeue();
         }
 
-        if (Action.SCAN.equals(decisionMaker.getPrevDecision().getAction())){
-            creeks.addCreek(new Creek(decisionMaker.getPrevResponse().getCreek(), 1, 1));
-            DecisionHandler.echo(decisionMaker.getDecision(), drone.getDirection());
-            decisionMaker.getDecisions().add(decisionMaker.getDecision().toString());
-            DecisionHandler.fly(decisionMaker.getDecision());
-            return decisionMaker.getDecision();
+        if (Action.SCAN.equals(previous.getAction())){
+            creeks.addCreek(new Creek(previous.getCreekId(), 1, 1));
+            currentState.echo(drone.getDirection());
+            currentState.enqueue();
+            currentState.fly();
+            return currentState.getDecision();
         } 
 
-        if (Action.ECHO.equals(decisionMaker.getPrevDecision().getAction())){
-            if (decisionMaker.getPrevResponse().groundFound() && decisionMaker.getPrevResponse().getRange() == 0){
-                DecisionHandler.scan(decisionMaker.getDecision());
-                return decisionMaker.getDecision();
+        if (Action.ECHO.equals(previous.getAction())){
+            if (previous.isGround() && previous.getRange() == 0){
+                currentState.scan();
+                return currentState.getDecision();
             }
 
-            int flyCount = decisionMaker.getPrevResponse().getRange() - 1;
+            int flyCount = previous.getRange() - 1;
 
             for (int i=1; i<flyCount ; i++){
-                DecisionHandler.fly(decisionMaker.getDecision());
-                decisionMaker.getDecisions().add(decisionMaker.getDecision().toString());
+                currentState.fly();
+                currentState.enqueue();
             }
             
-            if (decisionMaker.getPrevResponse().groundFound()){
-                DecisionHandler.scan(decisionMaker.getDecision());
-                decisionMaker.getDecisions().add(decisionMaker.getDecision().toString());
+            if (previous.isGround()){
+                currentState.scan();
+                currentState.enqueue();
             } else {
-                DecisionHandler.echo(decisionMaker.getDecision(), Direction.NORTH);
-                decisionMaker.getDecisions().add(decisionMaker.getDecision().toString());
-                DecisionHandler.heading(decisionMaker.getDecision(), Direction.NORTH);
-                decisionMaker.getDecisions().add(decisionMaker.getDecision().toString());
+                currentState.echo(Direction.NORTH);
+                currentState.enqueue();
+                currentState.heading(Direction.NORTH);
+                currentState.enqueue();
                 Direction head = drone.getDirection() == Direction.EAST ? Direction.WEST : Direction.EAST;
-                DecisionHandler.heading(decisionMaker.getDecision(), head);
-                decisionMaker.getDecisions().add(decisionMaker.getDecision().toString());
-                DecisionHandler.echo(decisionMaker.getDecision(), head);
-                decisionMaker.getDecisions().add(decisionMaker.getDecision().toString());
+                currentState.heading(head);
+                currentState.enqueue();
+                currentState.echo(head);
+                currentState.enqueue();
                 drone.setDirection(head);
             }
 
-            DecisionHandler.fly(decisionMaker.getDecision());
-            return decisionMaker.getDecision();
+            currentState.fly();
+            return currentState.getDecision();
         }
 
-        DecisionHandler.echo(decisionMaker.getDecision(), drone.getDirection());
-        return decisionMaker.getDecision();
+        currentState.echo(drone.getDirection());
+        return currentState.getDecision();
     }
 }
