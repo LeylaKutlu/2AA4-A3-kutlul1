@@ -14,7 +14,7 @@ public class PhaseDecisionMaker extends DecisionMaker {
     private Queue<String> decisions =  new ArrayDeque<String>();
 
     public PhaseDecisionMaker() {
-        setStrategy(new PhaseOneDecisionStrategy());
+        setStrategy(new PhaseOneStrategy());
     }
     
     // consider making coordinates change in the methods of decision handler instead of here
@@ -30,7 +30,7 @@ public class PhaseDecisionMaker extends DecisionMaker {
     public void setPhase(int phase) {
         this.phase = phase;
         if (phase == 2) {
-            setStrategy(new PhaseTwoDecisionStrategy());
+            setStrategy(new PhaseTwoStrategy());
         }
     }
     public Queue<String> getDecisions(){

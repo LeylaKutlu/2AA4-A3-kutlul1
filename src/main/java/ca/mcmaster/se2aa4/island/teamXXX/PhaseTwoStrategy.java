@@ -1,6 +1,6 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-public class PhaseTwoDecisionStrategy implements DecisionStrategy {
+public class PhaseTwoStrategy implements DecisionStrategy {
     @Override
     public Decision decideAction(Drone drone, PhaseDecisionMaker decisionMaker, Creeks creeks) {
         if (drone.getBatteryLevel() < 20) {
@@ -37,7 +37,7 @@ public class PhaseTwoDecisionStrategy implements DecisionStrategy {
                 return decisionMaker.getDecision();
             }
 
-            int flyCount = decisionMaker.getPrevResponse().groundFound() ? decisionMaker.getPrevResponse().getRange()-1 : decisionMaker.getPrevResponse().getRange() - 1;
+            int flyCount = decisionMaker.getPrevResponse().getRange() - 1;
 
             for (int i=1; i<flyCount ; i++){
                 DecisionHandler.fly(decisionMaker.getDecision());
