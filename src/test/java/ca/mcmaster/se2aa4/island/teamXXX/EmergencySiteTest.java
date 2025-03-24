@@ -1,33 +1,27 @@
-import ca.mcmaster.se2aa4.island.teamXXX.EmergencySite;
-import ca.mcmaster.se2aa4.island.teamXXX.Creeks;
-import ca.mcmaster.se2aa4.island.teamXXX.Creek;
-import org.junit.jupiter.api.BeforeEach;
+package ca.mcmaster.se2aa4.island.teamXXX;
+
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.BeforeEach;
+import java.util.List;
+import java.util.ArrayList;
+import static org.junit.jupiter.api.Assertions.*;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class EmergencySiteTest {
-
-    @Mock
-    private Creeks mockCreeks;
+    private EmergencySite emergencySite;
+    private Creeks creeks;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        EmergencySite site = new EmergencySite(3, 5);
+        creeks = new Creeks();
+        creeks.addCreek(new Creek("creek1", 1, 1));
+        creeks.addCreek(new Creek("creek2", 5, 3));
     }
 
     @Test
-    public void testGetNearestCreek() {
-        EmergencySite site = new EmergencySite(3, 5);
-        Creek mockCreek = new Creek("creek-123");
-
-        when(mockCreeks.getNearestCreek(3, 5)).thenReturn(mockCreek);
-
-        String result = site.getNearestCreek(mockCreeks);
-        assertEquals("creek-123", result);
+    public void getNearestCreekTest() {
+        emergencySite = new EmergencySite(2, 2);
+        assertEquals("creek1", emergencySite.getNearestCreek(creeks));
     }
 }
