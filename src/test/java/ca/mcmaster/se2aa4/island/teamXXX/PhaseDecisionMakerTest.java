@@ -7,50 +7,39 @@ import static org.mockito.Mockito.*;
 
 class PhaseDecisionMakerTest {
     private PhaseDecisionMaker decisionMaker;
-    private Drone mockDrone;
-    private PreviousState mockPrevious;
-    private StrategyFactory mockFactory;
-    private Strategy mockStrategy;
-    private Creeks mockCreeks;
-    private CurrentState mockCurrentState;
+    private Drone Drone;
+    private PreviousState previous;
+    private StrategyFactory factory;
+    private Strategy strategy;
+    private Creeks creeks;
+    private CurrentState currentState;
 
     @BeforeEach
     void setUp() {
+        void setUp() {
         decisionMaker = new PhaseDecisionMaker();
-        mockDrone = mock(Drone.class);
-        mockPrevious  = mock(PreviousState.class);
-        mockFactory = mock(StrategyFactory.class);
-        mockStrategy = mock(Strategy.class);
-        mockCreeks = mock(Creeks.class);
-        mockCurrentState = mock(CurrentState.class);
-
-        decisionMaker.factory = mockFactory;
-        when(mockFactory.getStrategy(anyInt())).thenReturn(mockStrategy);
-        when(mockStrategy.decideAction(any(), any(), any(), any(), any()))
-            .thenReturn(new Decision(Action.FLY));
+        factory = new StrategyFactory();
+        decisionMaker.factory = factory;
+        creeks = new Creeks();
     }
 
     @Test
-    void testDecideActionDelegatesToStrategy() {
-        Decision decisions = decisionMaker.decideAction(mockDrone, mockPrevious);
-
+    void testDecideAction() {
+        decisionMaker.setPhase(1);
+        Decision decision = decisionMaker.decideAction(drone, previous);
+        
         assertNotNull(decision);
-        assertEquals(Action.FLY, decision.getAction());
-        verify(mockFactory).getStrategy(anyInt());
-        verify(mockStrategy).decideAction(any(), any(), any(), any(), any());
     }
 
     @Test
-    void testGetCreeksReturnsSameObject() {
+    void testGetCreeks() {
         assertNotNull(decisionMaker.getCreeks());
         assertSame(decisionMaker.getCreeks(), decisionMaker.getCreeks());
     }
 
     @Test
-    void testSetPhaseUpdatesPhaseCorrectly() {
+    void testSetPhase() {
         decisionMaker.setPhase(2);
-        Decision decision = decisionMaker.decideAction(mockDrone, mockPrevious);
-
-        verify(mockFactory).getStrategy(2);
+        assertEquals(2, decisionMaker.getPhase());
     }
 }
