@@ -21,6 +21,7 @@ class PhaseDecisionMakerTest {
         factory = new StrategyFactory();
         decisionMaker.factory = factory;
         creeks = new Creeks();
+        }
     }
 
     @Test
