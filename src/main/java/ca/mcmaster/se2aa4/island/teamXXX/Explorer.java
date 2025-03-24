@@ -16,6 +16,7 @@ public class Explorer implements IExplorerRaid {
     private Drone drone;
     private DecisionMaker decisionMaker;
     private EmergencySite emergencySite;
+    private Coordinates coordinates;
     private PreviousState previous;
 
     @Override
@@ -27,21 +28,33 @@ public class Explorer implements IExplorerRaid {
         int batteryLevel = info.getInt("budget");
         this.drone = new Drone(batteryLevel, Direction.EAST);
         this.decisionMaker = new PhaseDecisionMaker();
+        this.coordinates = new Coordinates(1, 1);
+        coordinates.attach(drone);
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
     }
 
     @Override
     public String takeDecision() {
+        Direction prevDirection = drone.getDirection();
 
         Decision decision = decisionMaker.decideAction(drone, previous);
         logger.info("** Decision: {}", decision);
 
+
+
         if (previous == null) {
-            previous = new PreviousState(new Decision(decision), null, drone.getDirection());
+            previous = new PreviousState(new Decision(decision), null, prevDirection);
         } else {
+            coordinates.update(previous, prevDirection, drone.getDirection());
             previous.setDecision(decision);
+            previous.setDirection(prevDirection);
+            if (previous.foundSite()) {
+                emergencySite = new EmergencySite(drone.getX(), drone.getY());
+                logger.info("Emergency site found at: {} {}", drone.getX(), drone.getY());
+            }
         }
+
 
         return decision.toString();
     }
@@ -60,11 +73,17 @@ public class Explorer implements IExplorerRaid {
         JSONObject extraInfo = response.getExtras();
         logger.info("Additional information received: {}", extraInfo);
         previous.setResponse(response);
-        logger.info("Battery level is now {}", drone.getBatteryLevel()); //not needed
+        logger.info("Battery level is now {}", drone.getBatteryLevel()); 
+
+        if (Action.STOP.equals(previous.getAction())) {
+            deliverFinalReport();
+        }
     }
 
     @Override
     public String deliverFinalReport() {
+        String c = emergencySite.getNearestCreek(decisionMaker.getCreeks());
+        logger.info("The located creek is: {}", c);
         return "no creek found";
     }
 

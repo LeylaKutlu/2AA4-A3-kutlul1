@@ -5,26 +5,26 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 
 public class Response{
-    private JSONObject response;
+    private JSONObject responseJSON;
     private JSONObject extras;
 
-    public Response(JSONObject response){
-        this.response = response;
+    public Response(JSONObject responseJSON){
+        this.responseJSON = responseJSON;
         
     }
 
     public String getStatus(){
-        return response.getString("status");
+        return responseJSON.getString("status");
     }
 
     public int getCost(){
-        return response.getInt("cost");
+        return responseJSON.getInt("cost");
     }
     
 
     public JSONObject getExtras(){
-        extras = response.getJSONObject("extras");
-        return response.getJSONObject("extras");
+        extras = responseJSON.getJSONObject("extras");
+        return responseJSON.getJSONObject("extras");
     }
 
     public int getRange(){
@@ -48,7 +48,7 @@ public class Response{
         } 
 
         JSONArray creeks = extras.getJSONArray("creeks");
-        if (creeks.isEmpty()){
+        if (creeks.length() == 0){
             return null;
         } 
         return creeks.getString(0);
@@ -60,7 +60,7 @@ public class Response{
         } 
 
         JSONArray sites = extras.getJSONArray("sites");
-        if (sites.isEmpty()){
+        if (sites.length() == 0){
             return false;
         } 
         return true;
@@ -68,7 +68,7 @@ public class Response{
 
     @Override
     public String toString(){
-        return this.response.toString(2);
+        return this.responseJSON.toString(2);
     }
 
 

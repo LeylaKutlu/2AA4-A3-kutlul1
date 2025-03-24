@@ -38,4 +38,8 @@ public class PreviousState{
     public void setDecision(Decision decision){
         prevDecision = decision;
     }
+
+    public boolean foundSite(){
+        return prevResponse.foundSite();
+    }
 }

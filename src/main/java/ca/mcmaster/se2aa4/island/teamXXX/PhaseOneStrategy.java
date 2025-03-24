@@ -30,7 +30,7 @@ public class PhaseOneStrategy implements DecisionStrategy {
         }
 
         if (Action.SCAN.equals(previous.getAction())){
-            creeks.addCreek(new Creek(previous.getCreekId(), 1, 1));
+            creeks.addCreek(new Creek(previous.getCreekId(), drone.getX(), drone.getY()));
             currentState.echo(drone.getDirection());
             currentState.enqueue();
             currentState.fly();

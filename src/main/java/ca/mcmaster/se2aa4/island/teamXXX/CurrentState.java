@@ -2,15 +2,11 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 
 import java.util.Queue;
 import java.util.ArrayDeque;
+import org.json.JSONObject;
 
 public class CurrentState{
     private Decision currentDecision = new Decision();
     private Queue<String> decisions = new ArrayDeque<String>();
-    private ActionHandler actionHandler;
-
-    public CurrentState(ActionHandler actionHandler){
-        this.actionHandler = actionHandler;
-    }
 
     public void enqueue(){
         decisions.add(currentDecision.toString());
@@ -30,24 +26,28 @@ public class CurrentState{
     }
 
     public void fly(){
-        actionHandler.fly(currentDecision);
+        currentDecision.setAction(Action.FLY);
     }
 
     public void echo(Direction direction){
-        actionHandler.echo(currentDecision, direction);
+        JSONObject parameters = new JSONObject();
+        parameters.put("direction", direction.toString());
+        currentDecision.setAction(Action.ECHO);
+        currentDecision.setParameters(parameters);
     }
 
     public void heading(Direction direction){
-        actionHandler.heading(currentDecision, direction);
+        JSONObject parameters = new JSONObject();
+        parameters.put("direction", direction.toString());
+        currentDecision.setAction(Action.HEADING);
+        currentDecision.setParameters(parameters);
     }
 
     public void stop(){
-        actionHandler.stop(currentDecision);
-    }
+        currentDecision.setAction(Action.STOP);    }
 
     public void scan(){
-        actionHandler.scan(currentDecision);
-    }
+        currentDecision.setAction(Action.SCAN);    }
 
     public Decision getDecision(){
         return currentDecision;

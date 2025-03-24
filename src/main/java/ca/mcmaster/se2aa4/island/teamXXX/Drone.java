@@ -1,6 +1,6 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-public class Drone {
+public class Drone implements Observer{
     
     private int batteryLevel;
     private Direction direction = Direction.EAST;
@@ -28,10 +28,20 @@ public class Drone {
         this.batteryLevel -= cost;
     }
 
-    public void setCoordinates(int x, int y) {
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    @Override 
+    public void updateCoordinates(int x, int y) {
         this.x = x;
         this.y = y;
     }
+
 
 
 }

@@ -7,15 +7,18 @@ public class Creeks {
 
     private List<Creek> creeks;
 
-    public Creeks() {
+    public Creeks(){
         this.creeks = new ArrayList<>();
     }
 
+    public Creeks(Creeks other){
+        this.creeks = other.creeks;
+    }
+
     public void addCreek(Creek creek) {
-        if (creek == null) {
-            return;
+        if (creek.getCreekId() != null) {
+            creeks.add(creek);
         }
-        creeks.add(creek);
     }
 
 
