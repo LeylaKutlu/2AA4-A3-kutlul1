@@ -13,7 +13,7 @@ public class EmergencySiteTest {
 
     @BeforeEach
     public void setUp() {
-        EmergencySite site = new EmergencySite(3, 5);
+        EmergencySite site = new EmergencySite("site1", 3, 5);
         creeks = new Creeks();
         creeks.addCreek(new Creek("creek1", 1, 1));
         creeks.addCreek(new Creek("creek2", 5, 3));
@@ -21,7 +21,7 @@ public class EmergencySiteTest {
 
     @Test
     public void getNearestCreekTest() {
-        emergencySite = new EmergencySite(2, 2);
+        emergencySite = new EmergencySite("site2", 2, 2);
         assertEquals("creek1", emergencySite.getNearestCreek(creeks));
     }
 }

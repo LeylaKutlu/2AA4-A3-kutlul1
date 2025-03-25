@@ -8,11 +8,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CurrentStateTest {
     private CurrentState currentState;
     private Decision decision;
+    private Drone drone;
 
     @BeforeEach
     public void setUp() {
         currentState = new CurrentState();
         decision = new Decision();
+        drone = new Drone(0, Direction.NORTH);
     }
 
     @Test
@@ -20,7 +22,7 @@ public class CurrentStateTest {
         currentState.fly();
         currentState.enqueue();
         assertTrue(currentState.hasPendingDecisions());
-        assertEquals(currentState.dequeue().toString(), "{\"action\":\"fly\"}");
+        assertEquals(currentState.dequeue(drone).toString(), "{\"action\":\"fly\"}");
     }
 
     @Test
