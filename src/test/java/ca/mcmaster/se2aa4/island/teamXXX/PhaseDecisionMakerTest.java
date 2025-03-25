@@ -16,6 +16,7 @@ class PhaseDecisionMakerTest {
 
     @BeforeEach
     void setUp() {
+        void setUp() {
         decisionMaker = new PhaseDecisionMaker();
         factory = new StrategyFactory();
         decisionMaker.factory = factory;
