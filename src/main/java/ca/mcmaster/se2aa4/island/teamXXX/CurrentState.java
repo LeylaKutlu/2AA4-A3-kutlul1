@@ -4,13 +4,9 @@ import java.util.Queue;
 import java.util.ArrayDeque;
 import org.json.JSONObject;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-
 public class CurrentState implements DecisionQueue, DroneActions {
     private Decision currentDecision = new Decision();
     private Queue<String> decisions = new ArrayDeque<String>();
-    private final Logger logger = LogManager.getLogger();
 
     public void enqueue(){
         decisions.add(currentDecision.toString());
@@ -21,7 +17,6 @@ public class CurrentState implements DecisionQueue, DroneActions {
 
         if (Action.HEADING.equals(currentDecision.getAction())){
             drone.setDirection(Direction.fromString(currentDecision.getDirection()));
-            logger.info("Headed and facing: " + drone.getDirection().toString());
         }
         return currentDecision;
     }
