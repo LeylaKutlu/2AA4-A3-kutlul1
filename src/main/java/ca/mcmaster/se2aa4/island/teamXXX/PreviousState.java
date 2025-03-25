@@ -42,4 +42,8 @@ public class PreviousState{
     public boolean foundSite(){
         return prevResponse.foundSite();
     }
+
+    public String getSite(){
+        return prevResponse.getSite();
+    }
 }

@@ -1,13 +1,11 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-import ca.mcmaster.se2aa4.island.teamXXX.Action;
-import ca.mcmaster.se2aa4.island.teamXXX.Direction;
-
 import org.json.JSONObject;
 
 public class Decision {
     
     private JSONObject decision;
+    private JSONObject parameters;
 
     public Decision() {
         this.decision = new JSONObject();
@@ -27,6 +25,7 @@ public class Decision {
     }
 
     public void setParameters(JSONObject parameters) {
+        this.parameters = parameters;
         decision.put("parameters", parameters);
     }
 
@@ -36,6 +35,10 @@ public class Decision {
 
     public void setDecision(String decision){
         this.decision = new JSONObject(decision);
+    }
+
+    public String getDirection(){
+        return parameters.optString("direction", "");
     }
 
     @Override

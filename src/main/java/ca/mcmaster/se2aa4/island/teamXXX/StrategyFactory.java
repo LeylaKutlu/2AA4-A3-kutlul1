@@ -7,7 +7,8 @@ public class StrategyFactory{
 
     private Map<Integer, DecisionStrategy> strategies = new HashMap<Integer, DecisionStrategy>();
 
-    {   strategies.put(1, new PhaseOneStrategy());
+    public StrategyFactory(){   
+        strategies.put(1, new PhaseOneStrategy());
         strategies.put(2, new PhaseTwoStrategy());
     }
 
@@ -15,3 +16,4 @@ public class StrategyFactory{
         return strategies.get(phase);
     }
 }
+

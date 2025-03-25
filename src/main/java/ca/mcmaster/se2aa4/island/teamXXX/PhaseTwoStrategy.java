@@ -15,7 +15,7 @@ public class PhaseTwoStrategy implements DecisionStrategy {
         }
 
         if (currentState.hasPendingDecisions()){
-            return currentState.dequeue();
+            return currentState.dequeue(drone);
         }
 
         if (Action.SCAN.equals(previous.getAction())){

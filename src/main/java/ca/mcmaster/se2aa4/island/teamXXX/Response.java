@@ -2,7 +2,6 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
-import java.util.ArrayList;
 
 public class Response{
     private JSONObject responseJSON;
@@ -60,10 +59,19 @@ public class Response{
         } 
 
         JSONArray sites = extras.getJSONArray("sites");
-        if (sites.length() == 0){
-            return false;
+        return (sites.length() != 0);
+    }
+
+    public String getSite(){
+        if (extras == null || !extras.has("sites")){
+            return null;
         } 
-        return true;
+
+        JSONArray sites = extras.getJSONArray("sites");
+        if (sites.length() == 0){
+            return null;
+        } 
+        return sites.getString(0);
     }
 
     @Override

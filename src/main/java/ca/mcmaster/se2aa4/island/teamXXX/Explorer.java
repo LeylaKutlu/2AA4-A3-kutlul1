@@ -1,7 +1,5 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-import ca.mcmaster.se2aa4.island.teamXXX.Direction;
-
 import java.io.StringReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,7 +48,7 @@ public class Explorer implements IExplorerRaid {
             previous.setDecision(decision);
             previous.setDirection(prevDirection);
             if (previous.foundSite()) {
-                emergencySite = new EmergencySite(drone.getX(), drone.getY());
+                emergencySite = new EmergencySite(previous.getSite(), drone.getX(), drone.getY());
                 logger.info("Emergency site found at: {} {}", drone.getX(), drone.getY());
             }
         }
@@ -83,6 +81,7 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String deliverFinalReport() {
         String c = emergencySite.getNearestCreek(decisionMaker.getCreeks());
+        logger.info("The located emergency site is: {}", emergencySite.getSiteId());
         logger.info("The located creek is: {}", c);
         return "no creek found";
     }
