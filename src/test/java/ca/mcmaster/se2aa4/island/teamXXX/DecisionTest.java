@@ -35,5 +35,4 @@ public class DecisionTest {
         decision.setAction(Action.STOP);
         assertEquals("{\"action\":\"stop\"}", decision.toString());
     }
-
 }

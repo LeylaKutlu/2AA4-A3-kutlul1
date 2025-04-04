@@ -56,5 +56,4 @@ public class PhaseOneStrategyTest {
         assertEquals(Action.FLY, decisionStrategy.getAction());
         assertEquals(Direction.WEST, drone.getDirection());
     } 
-
 }

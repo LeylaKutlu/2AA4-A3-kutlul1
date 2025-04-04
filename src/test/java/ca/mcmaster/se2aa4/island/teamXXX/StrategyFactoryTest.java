@@ -24,6 +24,5 @@ public class StrategyFactoryTest {
     @Test
     public void phaseTwoTest() {
         assertTrue(strategyFactory.getStrategy(2) instanceof PhaseTwoStrategy);
-    } 
-
+    }
 }

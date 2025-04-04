@@ -79,5 +79,4 @@ public class CurrentStateTest {
         assertNotNull(decision);
         assertEquals(currentState.getDecision().getAction(), Action.FLY);
     }
-
 }

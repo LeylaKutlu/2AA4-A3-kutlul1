@@ -69,5 +69,4 @@ public class PhaseTwoStrategyTest {
         assertNotNull(decisionStrategy);
         assertEquals(Action.ECHO, decisionStrategy.getAction());
     } 
-
 }
