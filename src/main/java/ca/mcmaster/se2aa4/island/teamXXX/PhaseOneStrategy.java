@@ -1,23 +1,33 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
+import org.json.JSONObject;
+
 public class PhaseOneStrategy implements DecisionStrategy {
     @Override
     public Decision decideAction(Drone drone, PhaseDecisionMaker decisionMaker, Creeks creeks, PreviousState previous, CurrentState currentState) {
+        CommandFactory commandFactory = new CommandFactory();
+
         if (drone.getBatteryLevel() < 20) {
-            currentState.stop();
+            Command stopCommand = commandFactory.getCommand(Action.STOP, drone, currentState, new JSONObject());
+            stopCommand.execute();
             return currentState.getDecision();
         }
 
         if (previous == null){
-            currentState.echo(drone.getDirection());
+            Command echoCommand = commandFactory.getCommand(Action.ECHO, drone, currentState, new JSONObject());
+            echoCommand.execute();
             return currentState.getDecision();
         }
 
         if (Action.ECHO.equals(previous.getAction()) && !previous.isGround() && previous.getRange() == 0){
             currentState.clearDecisions();
-            currentState.fly();
+            Command flyCommand = commandFactory.getCommand(Action.FLY, drone, currentState, new JSONObject());
+            flyCommand.execute();
             currentState.enqueue();
-            currentState.heading(drone.getDirection());
+            JSONObject parameters = new JSONObject();
+            parameters.put("direction", drone.getDirection().toString());
+            Command headingCommand = commandFactory.getCommand(Action.HEADING, drone, currentState, parameters);
+            headingCommand.execute();
             currentState.enqueue();
             currentState.heading(Direction.NORTH);
             drone.setDirection(Direction.NORTH);
@@ -31,27 +41,34 @@ public class PhaseOneStrategy implements DecisionStrategy {
 
         if (Action.SCAN.equals(previous.getAction())){
             creeks.addCreek(new Creek(previous.getCreekId(), drone.getX(), drone.getY()));
-            currentState.echo(drone.getDirection());
+            JSONObject parameters = new JSONObject();
+            parameters.put("direction", drone.getDirection().toString());
+            Command echoCommand = commandFactory.getCommand(Action.ECHO, drone, currentState, parameters);
+            echoCommand.execute();
             currentState.enqueue();
-            currentState.fly();
+            Command flyCommand = commandFactory.getCommand(Action.FLY, drone, currentState, new JSONObject());
+            flyCommand.execute();
             return currentState.getDecision();
         } 
 
         if (Action.ECHO.equals(previous.getAction())){
             if (previous.isGround() && previous.getRange() == 0){
-                currentState.scan();
+                Command scanCommand = commandFactory.getCommand(Action.SCAN, drone, currentState, new JSONObject());
+                scanCommand.execute();
                 return currentState.getDecision();
             }
 
             int flyCount = previous.getRange() - 1;
 
             for (int i=1; i<flyCount ; i++){
-                currentState.fly();
+                Command flyCommand = commandFactory.getCommand(Action.FLY, drone, currentState, new JSONObject());
+                flyCommand.execute();
                 currentState.enqueue();
             }
             
             if (previous.isGround()){
-                currentState.scan();
+                Command scanCommand = commandFactory.getCommand(Action.SCAN, drone, currentState, new JSONObject());
+                scanCommand.execute();
                 currentState.enqueue();
             } else {
                 currentState.echo(Direction.SOUTH);
@@ -66,11 +83,15 @@ public class PhaseOneStrategy implements DecisionStrategy {
                 drone.setDirection(head);
             }
 
-            currentState.fly();
+            Command flyCommand = commandFactory.getCommand(Action.FLY, drone, currentState, new JSONObject());
+            flyCommand.execute();
             return currentState.getDecision();
         }
 
-        currentState.echo(drone.getDirection());
+        JSONObject parameters = new JSONObject();
+        parameters.put("direction", drone.getDirection().toString());
+        Command echoCommand = commandFactory.getCommand(Action.ECHO, drone, currentState, parameters);
+        echoCommand.execute();
         return currentState.getDecision();
     }
 }
